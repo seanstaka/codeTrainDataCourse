@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <img scr="" id="dog" \>
+    <script>
+        console.log('about to fetch dog');
+        catchDog()
+            .then(response => {
+                console.log('yay');
+            }).catch(error => {
+                 console.log('error!');
+                 console.error(error);
+            });
+
+        async function catchDog() {
+            const response = await fetch('dog.jpg');
+            const blob = await response.blob();
+            document.getElementById('dog').src = URL.createObjectURL(blob);
+        }
+
+        // fetch('dog.jpg')
+        //     .then(response => {
+        //         console.log(response);
+        //         return response.blob();
+        //     })
+        //     .then(blob => {
+        //         console.log(blob);
+        //         document.getElementById('dog').src = URL.createObjectURL(blob);
+        //     })
+        //     .catch(error => {
+        //         console.log('error!');
+        //         console.error(error);
+        //     });
+    </script>
+</body>
+</html>
