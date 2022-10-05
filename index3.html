@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch and graph CSV </title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="800" height="300"></canvas>
+
+
+    <script>
+        //const xLabels =[];
+        //const yTemp = [];
+        chartIt();
+
+        async function chartIt() {
+            const data = await getData();
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    // labels: xLabels,
+                    labels: data.xData,
+                    datasets: [{
+                        label: 'Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies °C',
+                        //data: yTemp,
+                        data: data.yData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            //beginAtZero: false
+                            ticks: {
+                                //Include a dollar sign in the ticks
+                                callback: function(value, index, values) {
+                                    return value + '°'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Data from: https://data.giss.nasa.gov/gistemp/
+        // Mean from: https://earthobservatory.nasa.gove/world-of-
+
+        async function getData() {
+            const xData = [];
+            const yData = [];
+            const response = await fetch('ZonAnnMeans.csv');
+            const data = await response.text();
+            //console.log(data);
+
+            const table = data.split('\n').slice(1);
+            table.forEach(row => {
+                const columns = row.split(',');
+                const year = columns[0];
+                // xLabals.push(year);
+                xData.push(year);
+                const temp = columns[1];
+                yData.push(parseFloat(temp) + 14);
+                // yTemp.push(parseFloat(temp) + 14);
+                console.log(year, temp);
+            });
+            return {xData, yData};
+            //console.log(table);
+        }
+    </script>
+
+</body>
+</html>
